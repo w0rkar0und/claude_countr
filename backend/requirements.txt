@@ -1,0 +1,8 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+python-dotenv==1.0.0
+apscheduler==3.10.4
+watchdog==3.0.0
+aiofiles==23.2.1
+httpx==0.25.2
+websockets==12.0
