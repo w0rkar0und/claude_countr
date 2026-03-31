@@ -1,0 +1,32 @@
+# Environment variables (local secrets)
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+
+# Build artifacts
+dist/
+build/
+*.pyc
+
+# IDE & OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Database & data
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Development
+.claude/
+SETUP.md
+PROJECT_SETUP.md
