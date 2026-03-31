@@ -452,12 +452,12 @@ export default defineConfig({
 
 ## Workstreams for Claude Code
 
-### Phase 1: Backend Foundation (4–5 hours)
-- [ ] Set up FastAPI scaffold, env config
-- [ ] Implement `api_client.py` (Admin API polling)
-- [ ] Implement `claude_code_parser.py` (JSONL parsing + file watching)
-- [ ] Implement `database.py` (SQLite schema + CRUD)
-- [ ] Test Admin API + local file integration locally
+### Phase 1: Backend Foundation ✅ COMPLETE
+- [x] Set up FastAPI scaffold, env config
+- [x] Implement `api_client.py` (Admin API polling)
+- [x] Implement `claude_code_parser.py` (JSONL parsing + file watching)
+- [x] Implement `database.py` (SQLite schema + CRUD)
+- [x] Test Admin API + local file integration locally (32 sessions parsed successfully)
 
 ### Phase 2: Backend Real-Time (3–4 hours)
 - [ ] Implement `scheduler.py` (background tasks, WebSocket broadcasting)
@@ -586,4 +586,4 @@ token-dashboard/
 
 ---
 
-**Status:** Ready for Claude Code CLI build. Drop this into project root and start with Phase 1.
+**Status:** Phase 1 complete. Phase 0 (setup) and Phase 1 (backend foundation) pushed to GitHub. Ready for Phase 2.
