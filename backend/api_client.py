@@ -146,13 +146,22 @@ async def poll_latest_usage(since_minutes: int = 5) -> List[dict]:
     starting_at = (now - timedelta(minutes=since_minutes)).strftime("%Y-%m-%dT%H:%M:%SZ")
     ending_at = now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    # Use appropriate bucket width based on time range
+    if since_minutes > 60 * 24:
+        bucket_width = "1d"
+    elif since_minutes > 60:
+        bucket_width = "1h"
+    else:
+        bucket_width = "1m"
+
     try:
         raw = await fetch_usage_report(
             starting_at,
             ending_at,
-            bucket_width="1m",
-            group_by=["model", "workspace_id", "service_tier", "inference_geo"],
+            bucket_width=bucket_width,
+            group_by=["model", "workspace_id"],
         )
+        print(f"[api_client] Raw response: {len(raw.get('data', []))} buckets")
         return parse_usage_response(raw)
     except httpx.HTTPStatusError as e:
         print(f"[api_client] HTTP error polling usage: {e.response.status_code} - {e.response.text}")
