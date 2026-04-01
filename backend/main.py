@@ -304,6 +304,22 @@ async def refresh_data():
         return JSONResponse(status_code=500, content={"error": str(e)})
 
 
+@app.get("/api/date-range")
+async def get_date_range():
+    """Return the min/max dates that have data in api_usage."""
+    conn = db._get_conn()
+    try:
+        row = conn.execute(
+            "SELECT MIN(date(timestamp)) as min_date, MAX(date(timestamp)) as max_date FROM api_usage"
+        ).fetchone()
+        return {
+            "minDate": row["min_date"],
+            "maxDate": row["max_date"],
+        }
+    finally:
+        conn.close()
+
+
 @app.get("/api/debug/db")
 async def debug_db():
     """Temporary debug endpoint to inspect stored data."""

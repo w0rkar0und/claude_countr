@@ -7,14 +7,19 @@ import SettingsModal from './components/SettingsModal';
 export default function App() {
   const darkMode = useStore((s) => s.darkMode);
   const fetchCurrentData = useStore((s) => s.fetchCurrentData);
+  const fetchDateRange = useStore((s) => s.fetchDateRange);
   const fetchDailyData = useStore((s) => s.fetchDailyData);
   const fetchAlerts = useStore((s) => s.fetchAlerts);
   const initWebSocket = useStore((s) => s.initWebSocket);
 
   useEffect(() => {
-    fetchCurrentData();
-    fetchDailyData();
-    fetchAlerts();
+    async function init() {
+      await fetchDateRange();
+      fetchCurrentData();
+      fetchDailyData();
+      fetchAlerts();
+    }
+    init();
     const disconnect = initWebSocket();
     return disconnect;
   }, []);

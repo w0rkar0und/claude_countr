@@ -134,9 +134,15 @@ export interface Alert {
 
 // --- API Functions ---
 
+export interface DateRange {
+  minDate: string | null;
+  maxDate: string | null;
+}
+
 export const api = {
   getStatus: () => fetchJSON<StatusData>('/api/status'),
   getCurrent: () => fetchJSON<CurrentData>('/api/current'),
+  getDateRange: () => fetchJSON<DateRange>('/api/date-range'),
   getDaily: (date?: string) =>
     fetchJSON<DailyData>(`/api/daily${date ? `?date_str=${date}` : ''}`),
   getWeekly: (start?: string, end?: string) => {

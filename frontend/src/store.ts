@@ -7,6 +7,7 @@ import {
   type WeeklyData,
   type MonthlyData,
   type Alert,
+  type DateRange,
 } from './api/client';
 
 export type View = 'current' | 'daily' | 'weekly' | 'monthly';
@@ -18,6 +19,7 @@ interface DashboardState {
   weeklyData: WeeklyData | null;
   monthlyData: MonthlyData | null;
   alerts: Alert[];
+  dateRange: DateRange | null;
 
   // UI
   activeView: View;
@@ -33,6 +35,7 @@ interface DashboardState {
   setSettingsOpen: (open: boolean) => void;
   toggleDarkMode: () => void;
   fetchCurrentData: () => Promise<void>;
+  fetchDateRange: () => Promise<void>;
   fetchDailyData: (date?: string) => Promise<void>;
   fetchWeeklyData: (start?: string, end?: string) => Promise<void>;
   fetchMonthlyData: (month?: string) => Promise<void>;
@@ -47,6 +50,7 @@ export const useStore = create<DashboardState>((set, get) => ({
   weeklyData: null,
   monthlyData: null,
   alerts: [],
+  dateRange: null,
 
   activeView: 'current',
   lastUpdate: null,
@@ -80,10 +84,24 @@ export const useStore = create<DashboardState>((set, get) => ({
     }
   },
 
+  fetchDateRange: async () => {
+    try {
+      const dateRange = await api.getDateRange();
+      set({ dateRange });
+    } catch { /* silent */ }
+  },
+
   fetchDailyData: async (date?: string) => {
     try {
       set({ isLoading: true, error: null });
-      const data = await api.getDaily(date);
+      let data = await api.getDaily(date);
+      // If no data for requested date, try the most recent date with data
+      if (data.totalTokens === 0 && !date) {
+        const range = get().dateRange;
+        if (range?.maxDate) {
+          data = await api.getDaily(range.maxDate);
+        }
+      }
       set({ dailyData: data, isLoading: false });
     } catch (e: any) {
       set({ error: e.message, isLoading: false });
@@ -93,7 +111,20 @@ export const useStore = create<DashboardState>((set, get) => ({
   fetchWeeklyData: async (start?: string, end?: string) => {
     try {
       set({ isLoading: true, error: null });
-      const data = await api.getWeekly(start, end);
+      let data = await api.getWeekly(start, end);
+      // If no data for requested range, use the range around the most recent data
+      if (data.totalTokens === 0 && !start && !end) {
+        const range = get().dateRange;
+        if (range?.maxDate) {
+          const maxDate = new Date(range.maxDate);
+          const weekStart = new Date(maxDate);
+          weekStart.setDate(maxDate.getDate() - 6);
+          data = await api.getWeekly(
+            weekStart.toISOString().slice(0, 10),
+            range.maxDate,
+          );
+        }
+      }
       set({ weeklyData: data, isLoading: false });
     } catch (e: any) {
       set({ error: e.message, isLoading: false });
@@ -103,7 +134,14 @@ export const useStore = create<DashboardState>((set, get) => ({
   fetchMonthlyData: async (month?: string) => {
     try {
       set({ isLoading: true, error: null });
-      const data = await api.getMonthly(month);
+      let data = await api.getMonthly(month);
+      // If no data for requested month, use the month of the most recent data
+      if (data.totalTokens === 0 && !month) {
+        const range = get().dateRange;
+        if (range?.maxDate) {
+          data = await api.getMonthly(range.maxDate.slice(0, 7));
+        }
+      }
       set({ monthlyData: data, isLoading: false });
     } catch (e: any) {
       set({ error: e.message, isLoading: false });
