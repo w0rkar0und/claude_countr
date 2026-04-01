@@ -177,21 +177,14 @@ async def poll_latest_usage(since_minutes: int = 5) -> List[dict]:
 
 async def fetch_claude_code_analytics(
     starting_at: str,
-    ending_at: str,
 ) -> dict:
     """
     Query /v1/organizations/usage_report/claude_code for per-user,
-    per-day Claude Code analytics including:
-    - actor (email or api_key_name)
-    - terminal_type (vscode, iTerm, tmux, etc.)
-    - lines of code added/removed
-    - commits and PRs by Claude Code
-    - tool actions (edit/write accepted/rejected)
-    - per-model cost breakdown
+    per-day Claude Code analytics.
+    Only accepts starting_at (no ending_at parameter).
     """
     params = {
         "starting_at": starting_at,
-        "ending_at": ending_at,
     }
     async with httpx.AsyncClient(timeout=30) as client:
         resp = await client.get(
@@ -265,10 +258,9 @@ async def poll_claude_code_analytics(since_days: int = 7) -> List[dict]:
     """Fetch the last N days of Claude Code analytics."""
     now = datetime.now(timezone.utc)
     starting_at = (now - timedelta(days=since_days)).strftime("%Y-%m-%d")
-    ending_at = now.strftime("%Y-%m-%d")
 
     try:
-        raw = await fetch_claude_code_analytics(starting_at, ending_at)
+        raw = await fetch_claude_code_analytics(starting_at)
         return parse_claude_code_analytics(raw)
     except httpx.HTTPStatusError as e:
         print(f"[api_client] HTTP error polling CC analytics: {e.response.status_code} - {e.response.text}")
