@@ -304,6 +304,21 @@ async def refresh_data():
         return JSONResponse(status_code=500, content={"error": str(e)})
 
 
+@app.get("/api/debug/db")
+async def debug_db():
+    """Temporary debug endpoint to inspect stored data."""
+    conn = db._get_conn()
+    try:
+        api_count = conn.execute("SELECT COUNT(*) as c FROM api_usage").fetchone()["c"]
+        sample = conn.execute("SELECT timestamp, model, input_tokens, output_tokens, cost FROM api_usage LIMIT 5").fetchall()
+        return {
+            "api_usage_count": api_count,
+            "sample_rows": [dict(r) for r in sample],
+        }
+    finally:
+        conn.close()
+
+
 @app.get("/api/alerts")
 async def get_alerts():
     try:
