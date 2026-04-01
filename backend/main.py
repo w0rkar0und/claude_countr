@@ -48,6 +48,17 @@ async def lifespan(app: FastAPI):
         db.record_claude_code_session(s)
     print(f"[main] Initial parse: {len(sessions)} Claude Code sessions")
 
+    # Backfill Admin API data (last 30 days) on fresh start
+    try:
+        records = await poll_latest_usage(since_minutes=60 * 24 * 30)
+        if records:
+            count = db.record_api_usage_batch(records)
+            print(f"[main] Admin API backfill: {count} records")
+        else:
+            print("[main] Admin API backfill: no records returned")
+    except Exception as e:
+        print(f"[main] Admin API backfill error: {e}")
+
     # Start background scheduler
     start_scheduler()
 
@@ -263,8 +274,8 @@ async def get_analytics(days: int = 7):
 @app.post("/api/refresh")
 async def refresh_data():
     try:
-        # Poll Admin API
-        records = await poll_latest_usage(since_minutes=5)
+        # Poll Admin API (last 24 hours on manual refresh)
+        records = await poll_latest_usage(since_minutes=60 * 24)
         if records:
             db.record_api_usage_batch(records)
 
