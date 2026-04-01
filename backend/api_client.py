@@ -255,8 +255,8 @@ def parse_claude_code_analytics(raw: dict) -> List[dict]:
 async def poll_claude_code_analytics(since_days: int = 7) -> List[dict]:
     """Fetch the last N days of Claude Code analytics."""
     now = datetime.now(timezone.utc)
-    starting_at = (now - timedelta(days=since_days)).strftime("%Y-%m-%dT00:00:00Z")
-    ending_at = now.strftime("%Y-%m-%dT23:59:59Z")
+    starting_at = (now - timedelta(days=since_days)).strftime("%Y-%m-%d")
+    ending_at = now.strftime("%Y-%m-%d")
 
     try:
         raw = await fetch_claude_code_analytics(starting_at, ending_at)
