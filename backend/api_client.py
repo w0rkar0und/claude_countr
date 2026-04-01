@@ -11,7 +11,6 @@ def _headers() -> dict:
     return {
         "x-api-key": ADMIN_API_KEY,
         "anthropic-version": "2023-06-01",
-        "anthropic-beta": "fast-mode-2026-02-01",
         "content-type": "application/json",
     }
 
