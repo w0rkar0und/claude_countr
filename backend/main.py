@@ -82,7 +82,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL, "https://claude.hydrae.mx", "http://localhost:3000", "http://localhost:5173", "http://localhost:5174"],
+    allow_origins=[FRONTEND_URL, "https://claude.hydrae.mx", "https://claude-countr.vercel.app", "http://localhost:3000", "http://localhost:5173", "http://localhost:5174"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
