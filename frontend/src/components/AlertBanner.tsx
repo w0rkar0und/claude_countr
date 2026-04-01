@@ -1,4 +1,3 @@
-import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../store';
 
 const severityStyles = {
@@ -10,7 +9,8 @@ const severityStyles = {
 const EMPTY: never[] = [];
 
 export default function AlertBanner() {
-  const warnings = useStore(useShallow((s) => s.currentData?.warnings ?? EMPTY));
+  const currentData = useStore((s) => s.currentData);
+  const warnings = currentData?.warnings ?? EMPTY;
 
   if (warnings.length === 0) return null;
 

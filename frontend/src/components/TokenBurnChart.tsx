@@ -7,13 +7,13 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../store';
 
 const EMPTY: never[] = [];
 
 export default function TokenBurnChart() {
-  const hourly = useStore(useShallow((s) => s.dailyData?.hourly ?? EMPTY));
+  const dailyData = useStore((s) => s.dailyData);
+  const hourly = dailyData?.hourly ?? EMPTY;
 
   if (hourly.length === 0) {
     return (

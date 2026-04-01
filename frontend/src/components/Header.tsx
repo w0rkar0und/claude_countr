@@ -1,4 +1,3 @@
-import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../store';
 
 function timeAgo(iso: string): string {
@@ -15,13 +14,9 @@ export default function Header() {
   const wsConnected = useStore((s) => s.wsConnected);
   const isLoading = useStore((s) => s.isLoading);
   const darkMode = useStore((s) => s.darkMode);
-  const { refreshAll, setSettingsOpen, toggleDarkMode } = useStore(
-    useShallow((s) => ({
-      refreshAll: s.refreshAll,
-      setSettingsOpen: s.setSettingsOpen,
-      toggleDarkMode: s.toggleDarkMode,
-    }))
-  );
+  const refreshAll = useStore((s) => s.refreshAll);
+  const setSettingsOpen = useStore((s) => s.setSettingsOpen);
+  const toggleDarkMode = useStore((s) => s.toggleDarkMode);
 
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-slate-700 bg-slate-900">
