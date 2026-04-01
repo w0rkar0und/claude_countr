@@ -151,7 +151,7 @@ async def poll_latest_usage(since_minutes: int = 5) -> List[dict]:
             starting_at,
             ending_at,
             bucket_width="1m",
-            group_by=["model", "workspace_id", "service_tier", "inference_geo", "speed"],
+            group_by=["model", "workspace_id", "service_tier", "inference_geo"],
         )
         return parse_usage_response(raw)
     except httpx.HTTPStatusError as e:
