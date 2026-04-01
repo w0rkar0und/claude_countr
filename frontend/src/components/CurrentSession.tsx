@@ -108,7 +108,8 @@ export default function CurrentSession() {
   if (!currentData || currentData.sessions.length === 0) {
     return (
       <div className="px-6 py-8 text-center text-slate-500">
-        No active sessions
+        <p>No active sessions</p>
+        <p className="text-xs mt-1">Check the Today, This Week, or This Month tabs for historical data</p>
       </div>
     );
   }

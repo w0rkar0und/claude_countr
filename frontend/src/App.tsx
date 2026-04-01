@@ -8,16 +8,20 @@ export default function App() {
   const darkMode = useStore((s) => s.darkMode);
   const fetchCurrentData = useStore((s) => s.fetchCurrentData);
   const fetchDateRange = useStore((s) => s.fetchDateRange);
-  const fetchDailyData = useStore((s) => s.fetchDailyData);
   const fetchAlerts = useStore((s) => s.fetchAlerts);
   const initWebSocket = useStore((s) => s.initWebSocket);
+  const setView = useStore((s) => s.setView);
 
   useEffect(() => {
     async function init() {
       await fetchDateRange();
-      fetchCurrentData();
-      fetchDailyData();
+      await fetchCurrentData();
       fetchAlerts();
+      // Default to "Today" view if no active sessions
+      const state = useStore.getState();
+      if (!state.currentData || state.currentData.sessions.length === 0) {
+        setView('daily');
+      }
     }
     init();
     const disconnect = initWebSocket();
